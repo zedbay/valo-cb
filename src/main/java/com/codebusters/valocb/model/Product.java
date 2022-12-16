@@ -33,9 +33,9 @@ public class Product {
 
     public String getName() {
         return name;
-    }
+    } // No usage
 
     public Set<Underlying> getUnderlyings() {
         return underlyings;
-    }
+    } // No usage
 }

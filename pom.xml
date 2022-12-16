@@ -34,11 +34,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- You don't need it anymore -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- You don't need it anymore -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

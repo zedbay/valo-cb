@@ -31,6 +31,7 @@ public class ProductTests {
 
     @Test
     public void shouldCorrectlyComputePriceWithManyUnderlyings() {
+        // Why commented ?
 //        Underlying underlying4 = new Underlying("underlying 4", new Price(12, "EUR"));
 //        Underlying underlying1 = new Underlying("underlying 1", new Price(122, "EUR"));
 //        Underlying underlying2 = new Underlying("underlying 2", new Price(1, "EUR"));
@@ -44,6 +45,7 @@ public class ProductTests {
 
     @Test
     public void shouldCorrectlyAddUnderlying() {
+        // Why commented ?
 //        assertEquals(0, product.getUnderlyings().size());
 //        Underlying underlying4 = new Underlying("underlying 4", new Price(12, "EUR"));
 //        product.addUnderlying(underlying4);

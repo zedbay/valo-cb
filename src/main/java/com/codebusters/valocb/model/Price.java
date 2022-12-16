@@ -14,6 +14,7 @@ public class Price {
         this.forex = forex;
     }
 
+    // "EUR" should be a constant
     public float getEurAmount() {
         if ("EUR".equals(currency)) {
             return amount;

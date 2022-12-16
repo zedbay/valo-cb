@@ -11,6 +11,7 @@ public class PriceTests {
 
     private Price price;
 
+    // why commented ?
 //    @BeforeEach
 //    public void init() {
 //        this.price = new Price(122, "EUR");
