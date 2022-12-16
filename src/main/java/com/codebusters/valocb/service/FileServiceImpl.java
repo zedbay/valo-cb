@@ -5,12 +5,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,9 +22,23 @@ public class FileServiceImpl implements FileService {
         InputStream inputStream = resource.getInputStream();
         byte[] dataAsBytes = FileCopyUtils.copyToByteArray(inputStream);
         String resourceAsString = new String(dataAsBytes, StandardCharsets.UTF_8);
-        ArrayList<String> strings = new ArrayList<>(Arrays.asList(resourceAsString.split("\n")));
-        List<String[]> collect = strings.stream().map(row -> row.split(",")).collect(Collectors.toList());
+        List<String> strings = new ArrayList<>(Arrays.asList(resourceAsString.split("\n")));
+        List<String[]> collect = strings.stream()
+                .map(row -> row.split(",(?!\\d\")"))
+                .collect(Collectors.toList());
         return collect.subList(startedRow, collect.size());
+    }
+
+    @Override
+    public <T> void writeToCsv(List<T> elements,Function<T, String> transformElement, String header, String fileName) throws IOException {
+        String elementsToString = elements.stream()
+                .map(transformElement)
+                .collect(Collectors.joining("\n"));
+
+        String fileContentAsString = header + "\n" + elementsToString;
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        writer.write(fileContentAsString);
+        writer.close();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.codebusters.valocb;
 
 import com.codebusters.valocb.model.*;
+import com.codebusters.valocb.service.CacheService;
 import com.codebusters.valocb.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -16,66 +17,75 @@ import java.util.Map;
 @SpringBootApplication
 public class ValoCbApplication {
 
-	@Autowired
-	private FileService fileService;
+    @Autowired
+    private FileService fileService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ValoCbApplication.class, args);
-	}
+    @Autowired
+    private CacheService cacheService;
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void initData() throws IOException {
-		List<String[]> productRows = fileService.getRowsFromFileName("Product.csv", 5);
-		List<String[]> pricesRows = fileService.getRowsFromFileName("Prices.csv", 4);
-		List<String[]> forexRows = fileService.getRowsFromFileName("Forex.csv", 5);
-		Map<String, Product> products = new HashMap<>();
-		Map<String, Client> clients = new HashMap<>();
-		Map<String, Portfolio> portfolios = new HashMap<>();
+    public static void main(String[] args) {
+        SpringApplication.run(ValoCbApplication.class, args);
+    }
 
-		Map<String, Forex> forexs = new HashMap<>();
+    @EventListener(ApplicationReadyEvent.class)
+    public void initData() throws IOException {
 
+		fileService.getRowsFromFileName("Forex.csv", 5).forEach(forexRow -> {
+            String sourceCurrency = forexRow[0].trim();
+            String targetCurrency = forexRow[1].trim();
+            String exchangeRateAsString = forexRow[2]
+                    .replace(",", ".")
+                    .replace("\"", "")
+                    .trim();
+            float exchangeRate = Float.parseFloat(exchangeRateAsString);
+            Forex forex = new Forex(sourceCurrency, targetCurrency, exchangeRate);
 
-		forexRows.forEach(forexRow -> {
-			String sourceCurrency = forexRow[0].trim();
-			String targetCurrency = forexRow[1].trim();
-			Float exchangeRate = Float.valueOf(forexRow[2].replace("\"", "").trim());
+            cacheService.cacheForex(forex);
+        });
 
-			Forex forex = new Forex(sourceCurrency, targetCurrency, exchangeRate);
-			forexs.putIfAbsent(forex.getKey(), forex);
-			// forex.putIfAbsent(sourceCurrency, exchangeRate);
-		});
+		fileService.getRowsFromFileName("Product.csv", 5).forEach(productRow -> {
+            String productName = productRow[0];
+            String clientName = productRow[1];
+            float quantity = Float.parseFloat(productRow[2].trim());
+            Product product = new Product(productName);
+            Client client = new Client(clientName);
 
+            cacheService.cacheClient(client);
+            cacheService.cacheProduct(product);
+            Product targetProduct = cacheService.getCachedProduct(productName);
+            cacheService.getCachedClient(clientName).addOwnedProduct(targetProduct, quantity);
+        });
 
-		productRows.forEach(productRow -> {
-			String productName = productRow[0];
-			Product product = new Product(productName);
-			String clientName = productRow[1];
-			Client client = new Client(clientName);
-			int quantity = Integer.parseInt(productRow[2].trim());
+		fileService.getRowsFromFileName("Prices.csv", 4).forEach(pricesRow -> {
+            String portfolioName = pricesRow[0];
+            String productName = pricesRow[1];
+            String currency = pricesRow[3];
+            String underlyingName = pricesRow[2];
+            int priceAmount = Integer.parseInt(pricesRow[4].trim());
+            Portfolio portfolio = new Portfolio(portfolioName);
+            Price underlyingPrice = new Price(priceAmount, currency, cacheService.getCachedForex(currency));
+            Underlying underlying = new Underlying(underlyingName, underlyingPrice);
 
-			clients.putIfAbsent(clientName, client);
-			products.putIfAbsent(productName, product);
-			Product targetProduct = products.get(productName);
-			clients.get(client.getName()).addOwnedProduct(targetProduct, quantity);
-		});
+            cacheService.cachePortfolio(portfolio);
+            Product targetProduct = cacheService.getCachedProduct(productName);
+            targetProduct.addUnderlying(underlying);
+            cacheService.getPortfolio(portfolioName).addProduct(targetProduct);
+        });
 
-		pricesRows.forEach(pricesRow -> {
-			String portfolioName = pricesRow[0];
-			String productName = pricesRow[1];
-			String currency = pricesRow[3];
-			int priceAmount = Integer.parseInt(pricesRow[4].trim());
-			Portfolio portfolio = new Portfolio(portfolioName);
-			// TODO: find forex
+        fileService.writeToCsv(
+                cacheService.getCachedPortfolio().stream().toList(),
+                (Portfolio portfolio) -> portfolio.getName() + "," + portfolio.getPrice(),
+                "PTF,price",
+                "Reporting-portfolio.csv"
+        );
 
-			Price underlyingPrice = new Price(priceAmount, currency, forexs.get(currency));
-			Underlying underlying = new Underlying(pricesRow[2], underlyingPrice);
+        fileService.writeToCsv(
+                cacheService.getCachedClients().stream().toList(),
+                (Client client) -> client.getName() + "," + client.getCapital(),
+                "Client,capital",
+                "Reporting-client.csv"
+        );
 
-			portfolios.putIfAbsent(portfolioName, portfolio);
-			Product targetProduct = products.get(productName);
-			targetProduct.addUnderlying(underlying);
-			portfolios.get(portfolioName).addProduct(targetProduct);
-		});
-
-	}
+    }
 
 }

@@ -2,6 +2,8 @@ package com.codebusters.valocb.model;
 
 public class Forex {
 
+    static final String eurosCurrency = "EUR";
+
     private final String currencyFrom;
 
     private final String currencyTo;
@@ -15,21 +17,19 @@ public class Forex {
     }
 
     public String getKey() {
-        return "EUR".equals(currencyFrom) ? currencyTo : currencyFrom;
+        return Forex.eurosCurrency.equals(currencyFrom) ? currencyTo : currencyFrom;
     }
 
     public float getRateToEur() {
-        if ("EUR".equals(currencyTo)) {
+        if (Forex.eurosCurrency.equals(currencyTo)) {
             return rate;
         }
 
         if (rate == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Rate is equal to zero");
         }
 
         return 1 / rate;
-
     }
-
 
 }

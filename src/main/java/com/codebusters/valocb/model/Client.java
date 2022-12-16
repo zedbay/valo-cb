@@ -3,18 +3,19 @@ package com.codebusters.valocb.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Client {
 
-    private String name;
+    private final String name;
 
-    private Map<Product, Integer> ownedProducts = new HashMap<>();
+    private final Map<Product, Float> ownedProducts = new HashMap<>();
 
     public Client(String name) {
         this.name = name;
     }
 
-    public void addOwnedProduct(Product product, int quantity) {
+    public void addOwnedProduct(Product product, float quantity) {
         this.ownedProducts.put(product, quantity);
     }
 
@@ -34,7 +35,8 @@ public class Client {
         return name;
     }
 
-    public Map<Product, Integer> getOwnedProducts() {
-        return ownedProducts;
+    public Set<Product> getOwnedProducts() {
+        return this.ownedProducts.keySet();
     }
+
 }

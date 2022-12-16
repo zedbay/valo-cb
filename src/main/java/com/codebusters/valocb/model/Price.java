@@ -15,7 +15,7 @@ public class Price {
     }
 
     public float getEurAmount() {
-        if ("EUR".equals(currency)) {
+        if (Forex.eurosCurrency.equals(currency)) {
             return amount;
         }
         return amount * forex.getRateToEur();

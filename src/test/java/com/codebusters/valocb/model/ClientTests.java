@@ -1,7 +1,5 @@
 package com.codebusters.valocb.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -10,50 +8,49 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class ClientTests {
 
-    private Client client;
-
-
-    @BeforeEach
-    public void init() {
-        client = new Client("Client name");
-    }
-
     @Test
-    public void shouldCorrectlyComputeCapitalWithNoProduct() {
+    void shouldCorrectlyComputeCapitalWithNoProduct() {
+        Client client = new Client("Client name");
         assertEquals(0, client.getCapital());
     }
 
-    @Nested
-    public class ClientTestsWithProduct {
+    @Test
+    void shouldAddProduct() {
+        Product product = new Product("Product name");
+        Client client = new Client("Client name");
+        client.addOwnedProduct(product, 1);
 
-//        @BeforeEach
-//        public void init() {
-//            Product product = new Product("Product name");
-//            Underlying underlying = new Underlying("underlying name", new Price(12, "EUR"));
-//            product.addUnderlying(underlying);
-//            client.addOwnedProduct(product, 1);
-//        }
-//
-//        @Test
-//        public void shouldAddProduct() {
-//            assertEquals(1, client.getOwnedProducts().size());
-//        }
-//
-//        @Test
-//        public void shouldCorrectlyComputePriceWithOneProduct() {
-//            assertEquals(12, client.getCapital());
-//        }
-//
-//        @Test
-//        public void shouldCorrectlyComptePriceWithProductPresentInQuantity() {
-//            Product product = new Product("Product name");
-//            Underlying underlying = new Underlying("underlying name 1", new Price(120, "EUR"));
-//            product.addUnderlying(underlying);
-//            client.addOwnedProduct(product, 2);
-//            assertEquals(252, client.getCapital());
-//        }
-
+        assertEquals(1, client.getOwnedProducts().size());
     }
+
+    @Test
+    void shouldCorrectlyComputeCapitalWithOneProduct() {
+        Product product = new Product("Product name");
+        Forex forex = new Forex("EUR", "EUR", 1);
+        Underlying underlying = new Underlying("underlying name", new Price(12, "EUR", forex));
+        product.addUnderlying(underlying);
+        Client client = new Client("Client name");
+        client.addOwnedProduct(product, 2);
+
+        assertEquals(24, client.getCapital());
+    }
+
+    @Test
+    void shouldCorrectlyComputeCapitalWithManyProduct() {
+        Product product = new Product("Product name");
+        Product productBis = new Product("Product name bis");
+        Forex forex = new Forex("EUR", "EUR", 1);
+        Underlying underlying = new Underlying("underlying name", new Price(12, "EUR", forex));
+        product.addUnderlying(underlying);
+        productBis.addUnderlying(underlying);
+        Client client = new Client("Client name");
+        client.addOwnedProduct(product, 2);
+        client.addOwnedProduct(productBis, 3);
+
+        assertEquals(60, client.getCapital());
+    }
+
+
 
 
 }

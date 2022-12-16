@@ -1,12 +1,12 @@
 package com.codebusters.valocb.model;
 
-
 import java.util.HashSet;
+import java.util.Set;
 
 public class Portfolio {
-    private String name;
+    private final String name;
 
-    private HashSet<Product> products = new HashSet<>();
+    private final Set<Product> products = new HashSet<>();
 
     public Portfolio(String name) {
         this.name = name;
@@ -21,4 +21,13 @@ public class Portfolio {
                 .map(Product::getPrice)
                 .reduce(0f, Float::sum);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
 }

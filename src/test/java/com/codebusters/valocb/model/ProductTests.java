@@ -31,26 +31,28 @@ public class ProductTests {
 
     @Test
     public void shouldCorrectlyComputePriceWithManyUnderlyings() {
-//        Underlying underlying4 = new Underlying("underlying 4", new Price(12, "EUR"));
-//        Underlying underlying1 = new Underlying("underlying 1", new Price(122, "EUR"));
-//        Underlying underlying2 = new Underlying("underlying 2", new Price(1, "EUR"));
-//        Underlying underlying3 = new Underlying("underlying 3", new Price(21, "EUR"));
-//        product.addUnderlying(underlying4);
-//        product.addUnderlying(underlying1);
-//        product.addUnderlying(underlying2);
-//        product.addUnderlying(underlying3);
-//        assertEquals(156, product.getPrice());
+        Forex forex = new Forex("EUR", "EUR", 1);
+        Underlying underlying4 = new Underlying("underlying 4", new Price(12, "EUR", forex));
+        Underlying underlying1 = new Underlying("underlying 1", new Price(122, "EUR", forex));
+        Underlying underlying2 = new Underlying("underlying 2", new Price(1, "EUR", forex));
+        Underlying underlying3 = new Underlying("underlying 3", new Price(21, "EUR", forex));
+        product.addUnderlying(underlying4);
+        product.addUnderlying(underlying1);
+        product.addUnderlying(underlying2);
+        product.addUnderlying(underlying3);
+        assertEquals(156, product.getPrice());
     }
 
     @Test
     public void shouldCorrectlyAddUnderlying() {
-//        assertEquals(0, product.getUnderlyings().size());
-//        Underlying underlying4 = new Underlying("underlying 4", new Price(12, "EUR"));
-//        product.addUnderlying(underlying4);
-//        assertEquals(1, product.getUnderlyings().size());
-//        Underlying underlying1 = new Underlying("underlying 1", new Price(122, "EUR"));
-//        product.addUnderlying(underlying1);
-//        assertEquals(2, product.getUnderlyings().size());
+        Forex forex = new Forex("EUR", "EUR", 1);
+        assertEquals(0, product.getUnderlyings().size());
+        Underlying underlying4 = new Underlying("underlying 4", new Price(12, "EUR", forex));
+        product.addUnderlying(underlying4);
+        assertEquals(1, product.getUnderlyings().size());
+        Underlying underlying1 = new Underlying("underlying 1", new Price(122, "EUR", forex));
+        product.addUnderlying(underlying1);
+        assertEquals(2, product.getUnderlyings().size());
     }
 
 
