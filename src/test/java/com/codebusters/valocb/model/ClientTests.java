@@ -26,6 +26,7 @@ public class ClientTests {
     @Nested
     public class ClientTestsWithProduct {
 
+        // Why commented ???
 //        @BeforeEach
 //        public void init() {
 //            Product product = new Product("Product name");

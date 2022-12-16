@@ -28,6 +28,8 @@ public class ValoCbApplication {
 		List<String[]> productRows = fileService.getRowsFromFileName("Product.csv", 5);
 		List<String[]> pricesRows = fileService.getRowsFromFileName("Prices.csv", 4);
 		List<String[]> forexRows = fileService.getRowsFromFileName("Forex.csv", 5);
+
+		// For all logic related to these Maps could be encapsulated in service or wrapper object
 		Map<String, Product> products = new HashMap<>();
 		Map<String, Client> clients = new HashMap<>();
 		Map<String, Portfolio> portfolios = new HashMap<>();
@@ -38,11 +40,12 @@ public class ValoCbApplication {
 		forexRows.forEach(forexRow -> {
 			String sourceCurrency = forexRow[0].trim();
 			String targetCurrency = forexRow[1].trim();
+			// Float could be use as primitive here
 			Float exchangeRate = Float.valueOf(forexRow[2].replace("\"", "").trim());
 
 			Forex forex = new Forex(sourceCurrency, targetCurrency, exchangeRate);
 			forexs.putIfAbsent(forex.getKey(), forex);
-			// forex.putIfAbsent(sourceCurrency, exchangeRate);
+			// forex.putIfAbsent(sourceCurrency, exchangeRate); commented code are not allowed
 		});
 
 
@@ -65,9 +68,10 @@ public class ValoCbApplication {
 			String currency = pricesRow[3];
 			int priceAmount = Integer.parseInt(pricesRow[4].trim());
 			Portfolio portfolio = new Portfolio(portfolioName);
-			// TODO: find forex
+			// TODO: find forex, is it done ?
 
 			Price underlyingPrice = new Price(priceAmount, currency, forexs.get(currency));
+			// pricesRow[2] should be explicitly named
 			Underlying underlying = new Underlying(pricesRow[2], underlyingPrice);
 
 			portfolios.putIfAbsent(portfolioName, portfolio);

@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class Client {
 
-    private String name;
+    private String name; // should  be final
 
-    private Map<Product, Integer> ownedProducts = new HashMap<>();
+    private Map<Product, Integer> ownedProducts = new HashMap<>(); // should  be final
 
     public Client(String name) {
         this.name = name;
@@ -36,5 +36,5 @@ public class Client {
 
     public Map<Product, Integer> getOwnedProducts() {
         return ownedProducts;
-    }
+    } // Unused method, should be removed
 }

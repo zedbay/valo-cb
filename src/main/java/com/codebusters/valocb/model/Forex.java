@@ -14,6 +14,7 @@ public class Forex {
         this.currencyTo = currencyTo;
     }
 
+    // "EUR" should be a constant
     public String getKey() {
         return "EUR".equals(currencyFrom) ? currencyTo : currencyFrom;
     }
@@ -30,6 +31,6 @@ public class Forex {
         return 1 / rate;
 
     }
-
+//Care about useless space
 
 }

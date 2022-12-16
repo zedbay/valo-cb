@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 public class Underlying {
 
-    private Price price;
+    private Price price; // Without setter should be final
 
     public Underlying(String name, Price price) {
         this.name = name;
@@ -22,16 +22,16 @@ public class Underlying {
 
     public String getName() {
         return name;
-    }
+    } // NO usage
 
     public void setName(String name) {
         this.name = name;
-    }
+    } // No usage
 
     private String name;
 
     public void setPrice(Price price) {
         this.price = price;
-    }
+    } // NO usage
 
 }
